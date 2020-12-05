@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/debian-10"
+  config.vm.box = "generic/alpine312"
 
   config.vm.network "private_network", type: "dhcp"
 
@@ -12,13 +12,13 @@ Vagrant.configure("2") do |config|
     vb.gui = false
     vb.memory = "2048"
     vb.cpus = 4
+    vb.customize ["modifyvm", :id, "--audio", "none"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
     set -e
-    swapoff -a
     curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --no-deploy traefik" sh
-    chmod -R 755 /etc/rancher/k3s/k3s.yaml
-    sed  "s/127.0.0.1/$(/sbin/ifconfig eth1 | awk '/inet / {print $2}')/g" /etc/rancher/k3s/k3s.yaml > /kubeconfig/config
+    while [ ! -f /etc/rancher/k3s/k3s.yaml ]; do sleep 1; done
+    sed  "s/127.0.0.1/$(ip route | grep eth1 | awk '/src/ {print $7}')/g" /etc/rancher/k3s/k3s.yaml > /kubeconfig/config
   SHELL
 end
