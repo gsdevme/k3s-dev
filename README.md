@@ -18,6 +18,12 @@ debian-10   Ready    master   26s   v1.19.4+k3s1
 
 A single portable Vagrantfile with a minimal install of K3s while also maintaining ease of talking to the cluster from a host
 
+## Adding to a new project
+
+```
+wget https://raw.githubusercontent.com/gsdevme/k3s-dev/master/Vagrantfile
+mkdir .kube/
+```
 
 ## Usage with Gitops
 
