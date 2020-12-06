@@ -1,2 +1,4 @@
 .vagrant
 .kube/config
+.kube/master_ip
+.kube/node_token
