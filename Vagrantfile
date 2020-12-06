@@ -34,6 +34,7 @@ Vagrant.configure("2") do |config|
       curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --no-deploy traefik" sh
       while [ ! -f /etc/rancher/k3s/k3s.yaml ]; do sleep 1; done
       ip route | grep eth1 | awk '/src/ {print $7}' > /kubeconfig/master_ip
+      chmod -R 644 /etc/rancher/k3s/k3s.yaml
       sed  "s/127.0.0.1/$(ip route | grep eth1 | awk '/src/ {print $7}')/g" /etc/rancher/k3s/k3s.yaml > /kubeconfig/config
       cp /var/lib/rancher/k3s/server/node-token /kubeconfig/node_token
     SHELL
