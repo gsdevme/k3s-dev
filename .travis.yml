@@ -1,4 +1,5 @@
-language: minimal
+language: generic
+#dist: bionic
 
 cache:
     directories:
