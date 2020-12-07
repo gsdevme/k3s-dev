@@ -20,6 +20,12 @@ install:
     # Install vagrant-libvirt Vagrant plugin
     - sudo vagrant plugin install vagrant-libvirt
 
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.19.0/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - sudo mv ./kubectl /usr/local/bin/kubectl
+
 script:
     - sudo vagrant up --provider=libvirt
     - sudo vagrant ssh -c "echo 'hello world!'"
+    - export KUBECONFIG=.kube/config
+    - kubectl get nodes -A
