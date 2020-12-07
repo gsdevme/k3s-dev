@@ -1,0 +1,29 @@
+language: generic
+dist: bionic
+
+cache:
+    directories:
+        - /home/travis/.vagrant.d/boxes
+
+# see https://github.com/jonashackt/vagrant-travisci-libvrt/blob/master/.travis.yml
+install:
+    # Install libvrt & KVM (see https://github.com/alvistack/ansible-role-virtualbox/blob/master/.travis.yml)
+    - sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
+
+    # Download Vagrant & Install Vagrant package
+    - sudo wget -nv https://releases.hashicorp.com/vagrant/2.2.13/vagrant_2.2.13_x86_64.deb
+    - sudo dpkg -i vagrant_2.2.13_x86_64.deb
+
+    # Vagrant correctly installed?
+    - vagrant --version
+
+    # Install vagrant-libvirt Vagrant plugin
+    - sudo vagrant plugin install vagrant-libvirt
+
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.19.0/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - sudo mv ./kubectl /usr/local/bin/kubectl
+
+script:
+    - sudo vagrant up --provider=libvirt
+    - sudo vagrant ssh -c "echo 'hello world!'"
