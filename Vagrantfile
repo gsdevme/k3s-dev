@@ -1,6 +1,7 @@
 PROJ_HOME = File.dirname(__FILE__)
 PROJECT = File.basename(PROJ_HOME)
 NODE_MEMORY = (ENV['NODE_MEMORY'] || 1024).to_i
+NUM_NODES = (ENV['NUM_NODES'] || 0).to_i
 
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/alpine312"
@@ -37,5 +38,24 @@ Vagrant.configure("2") do |config|
       sed  "s/127.0.0.1/$(ip route | grep eth1 | awk '/src/ {print $7}')/g" /etc/rancher/k3s/k3s.yaml > /kubeconfig/config
       cp /var/lib/rancher/k3s/server/node-token /kubeconfig/node_token
     SHELL
+  end
+
+  (1..NUM_NODES).each do |i|
+    config.vm.define "#{PROJECT}-node-#{i}" do |node|
+      node.vm.hostname = "#{PROJECT}-node-#{i}"
+
+      node.vm.provider "virtualbox" do |vb|
+        vb.name = "#{PROJECT}-node-#{i}"
+        vb.memory = "#{NODE_MEMORY}"
+        vb.cpus = 2
+      end
+
+      node.vm.provision "shell", inline: <<-SHELL
+        set -e
+        export MASTER_IP=$(cat /kubeconfig/master_ip)
+        export NODE_TOKEN=$(cat /kubeconfig/node_token)
+        curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443/ K3S_TOKEN=$NODE_TOKEN sh
+      SHELL
+    end
   end
 end
