@@ -1,5 +1,8 @@
 # K3s with Vagrant
 
+![k3s](https://user-images.githubusercontent.com/319498/101405294-c5a14b80-38cf-11eb-8ef9-3edf19dad89d.gif)
+
+
 ## Getting Started
 
 ```
