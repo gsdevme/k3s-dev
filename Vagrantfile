@@ -12,9 +12,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder ".kube/", "/kubeconfig", create:true
 
-  # Use NFS for libvirt
+  # Use rsync for libvirt
   config.vm.provider :libvirt do |libvirt, override|
-    override.vm.synced_folder ".kube/", "/kubeconfig", create:true, nfs: true
+    override.vm.synced_folder ".kube/", "/kubeconfig", create:true, type: 'rsync'
   end
 
   config.vm.provider "virtualbox" do |vb|
