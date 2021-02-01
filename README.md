@@ -6,12 +6,9 @@
 # Boot a bare virtual machine and install k3s
 ➜  vagrant up
 
-# To allow your host kubectl to speak to the cluster
-➜  export KUBECONFIG=.kube/config
-
-➜  kubectl get nodes
-NAME        STATUS   ROLES    AGE   VERSION
-debian-10   Ready    master   26s   v1.19.4+k3s1
+➜  kubectl --kubeconfig=".kube/config" get nodes -A
+NAME             STATUS   ROLES    AGE   VERSION
+k3s-dev-master   Ready    master   11s   v1.19.4+k3s1
 ```
 
 ## Goal
