@@ -3,6 +3,10 @@ PROJECT = File.basename(PROJ_HOME)
 NODE_MEMORY = (ENV['NODE_MEMORY'] || 1024).to_i
 NUM_NODES = (ENV['NUM_NODES'] || 0).to_i
 
+if not Dir.exist?('.kube/')
+  raise(".kube/ folder does not exist, please create it e.g. 'mkdir .kube'")
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/alpine312"
 
@@ -37,6 +41,7 @@ Vagrant.configure("2") do |config|
       while [ ! -f /etc/rancher/k3s/k3s.yaml ]; do sleep 1; done
       sed  "s/127.0.0.1/$(ip route | grep eth1 | awk '/src/ {print $7}')/g" /etc/rancher/k3s/k3s.yaml > /kubeconfig/config
       cp /var/lib/rancher/k3s/server/node-token /kubeconfig/node_token
+      echo "K3s cluster ready at $IP_ADDRESS"
     SHELL
   end
 
